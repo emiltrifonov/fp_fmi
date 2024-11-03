@@ -1,0 +1,26 @@
+(define (foldr op init l)
+  (if (null? l) init
+      (op (car l) (foldr op init (cdr l)))))
+
+(define (foldl op init l)
+  (if (null? l) init
+      (foldl op (op init (car l)) (cdr l))))
+
+(define l `(1 2 3 4 5))
+(define el `())
+
+;; zad 1
+(define (sum l)
+  (foldr + 0 l))
+
+;(sum l)
+;(sum el)
+
+;; zad 2
+(define (len l)
+  (foldr (lambda (i ans) (+ ans 1)) 0 l))
+
+;(len l)
+;(len el)
+
+;; zad 3
