@@ -1,26 +1,73 @@
-(define (foldr op init l)
-  (if (null? l) init
-      (op (car l) (foldr op init (cdr l)))))
-
-(define (foldl op init l)
-  (if (null? l) init
-      (foldl op (op init (car l)) (cdr l))))
-
-(define l `(1 2 3 4 5))
-(define el `())
-
-;; zad 1
+;1
 (define (sum l)
   (foldr + 0 l))
 
-;(sum l)
-;(sum el)
-
-;; zad 2
+;2
 (define (len l)
-  (foldr (lambda (i ans) (+ ans 1)) 0 l))
+  (foldl (lambda (acc x) (+ acc 1)) 0 l))
 
-;(len l)
-;(len el)
+;3
+(define (any? p? l)
+  (foldr (lambda (x y) (or (p? x) y)) #f l))
 
-;; zad 3
+(define (all? p? l)
+  (if (null? l) #f
+  (foldr (lambda (x y) (and (p? x) y)) #t l)))
+
+;4
+(define (foldr1 op l)
+  (if (null? (cdr l)) (car l)
+      (op (car l) (foldr1 op (cdr l)))))
+
+(define (foldl1 op l)
+  (if (null? (cdr l)) (car l)
+      (foldl op (car l) (cdr l))))
+
+;5
+(define (minimum l)
+  (foldr1 (lambda (x y) (if (< x y) x y)) l))
+
+(define (maximum l)
+  (foldr1 (lambda (x y) (if (> x y) x y)) l))
+
+;6
+(define (mymap f l)
+  (foldr (lambda (x y) (append (list (f x)) y)) `() l))
+
+;7
+(define (myfilter p? l)
+  (foldr (lambda (x y) (if (p? x) (append (list x) y) y)) `() l))
+
+;8
+(define (myreverse l)
+  (foldl (lambda (x y) (append (list y) x)) `() l))
+
+;9
+(define (take n l)
+  (if (<= n 0) `()
+      (append (list (car l)) (take (- n 1) (cdr l)))))
+
+(define (drop n l)
+  (cond ((null? l) `())
+        ((> n 0) (drop (- n 1) (cdr l)))
+        (else (append (list (car l)) (drop (- n 1) (cdr l))))))
+
+;10
+(define (take-while p? l)
+  (cond ((null? l) `())
+        ((p? (car l)) (append (list (car l)) (take-while p? (cdr l))))
+        (else `())))
+
+(define (drop-while p? l)
+  (cond ((null? l) `())
+        ((not (p? (car l))) (append (list (car l)) (drop-while p? (cdr l))))
+        (else (drop-while p? (cdr l)))))
+
+;11
+(define (zip l1 l2)
+  (if (or (null? l1) (null? l2)) `()
+      (append (list (cons (car l1) (car l2))) (zip (cdr l1) (cdr l2)))))
+
+(define (zip-with f l1 l2)
+  (if (or (null? l1) (null? l2)) `()
+      (append (list (f (car l1) (car l2))) (zip-with f (cdr l1) (cdr l2)))))
